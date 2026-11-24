@@ -1,0 +1,25 @@
+<div class="app-shell">
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark">SI</span>
+      <div>
+        <h1>Sistema de Gestión de Incidencias</h1>
+        <p>Panel institucional de soporte y seguimiento</p>
+      </div>
+    </div>
+    <nav class="app-nav">
+      <a routerLink="/incidencias" routerLinkActive="active">Incidencias</a>
+      <a routerLink="/incidencias/nueva" routerLinkActive="active">Nueva</a>
+    </nav>
+  </header>
+
+  <main class="app-main">
+    <router-outlet />
+  </main>
+
+  <footer class="app-footer">
+    <span>© {{ currentYear }} Sistema de Gestión de Incidencias · Angular + TypeScript</span>
+  </footer>
+</div>
+
+<app-toast />
