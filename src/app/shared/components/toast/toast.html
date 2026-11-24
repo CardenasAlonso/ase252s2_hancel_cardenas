@@ -1,0 +1,8 @@
+<div class="toast-container" aria-live="polite">
+  @for (n of notifications(); track n.id) {
+    <div class="toast" [class.toast-success]="n.type === 'success'" [class.toast-error]="n.type === 'error'" [class.toast-info]="n.type === 'info'">
+      <span>{{ n.message }}</span>
+      <button type="button" class="toast-close" (click)="dismiss(n.id)" aria-label="Cerrar">×</button>
+    </div>
+  }
+</div>
