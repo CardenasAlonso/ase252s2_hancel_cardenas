@@ -1,0 +1,115 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <h1>Panel de Incidencias</h1>
+      <p>Gestiona las incidencias institucionales: crea, consulta, edita y elimina registros.</p>
+    </div>
+    <a routerLink="/incidencias/nueva" class="btn btn-primary">+ Nueva incidencia</a>
+  </header>
+
+  <div class="stats-grid">
+    <article class="stat-card">
+      <span class="stat-label">Total</span>
+      <strong class="stat-value">{{ total() }}</strong>
+    </article>
+    <article class="stat-card stat-pendiente">
+      <span class="stat-label">Pendientes</span>
+      <strong class="stat-value">{{ pendientes() }}</strong>
+    </article>
+    <article class="stat-card stat-proceso">
+      <span class="stat-label">En proceso</span>
+      <strong class="stat-value">{{ enProceso() }}</strong>
+    </article>
+    <article class="stat-card stat-resuelta">
+      <span class="stat-label">Resueltas</span>
+      <strong class="stat-value">{{ resueltas() }}</strong>
+    </article>
+  </div>
+
+  <section class="filters-card">
+    <div class="search-box">
+      <input
+        type="search"
+        placeholder="Buscar por título, código o responsable..."
+        [value]="search()"
+        (input)="onSearch($event)"
+        aria-label="Buscar incidencias"
+      />
+    </div>
+    <div class="filter-group">
+      <label>
+        Prioridad
+        <select [value]="filtroPrioridad()" (change)="onPrioridadChange($event)">
+          <option value="Todas">Todas</option>
+          @for (p of prioridades; track p) {
+            <option [value]="p">{{ p }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Estado
+        <select [value]="filtroEstado()" (change)="onEstadoChange($event)">
+          <option value="Todos">Todos</option>
+          @for (e of estados; track e) {
+            <option [value]="e">{{ e }}</option>
+          }
+        </select>
+      </label>
+      <button type="button" class="btn btn-ghost" (click)="limpiarFiltros()">Limpiar</button>
+    </div>
+  </section>
+
+  @if (incidencias().length === 0) {
+    <div class="empty-state">
+      <h3>Sin resultados</h3>
+      <p>No se encontraron incidencias con los filtros aplicados.</p>
+      <a routerLink="/incidencias/nueva" class="btn btn-primary">Crear incidencia</a>
+    </div>
+  } @else {
+    <div class="table-wrapper">
+      <table class="incidencias-table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Título</th>
+            <th>Responsable</th>
+            <th>Prioridad</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th class="actions-col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (inc of incidencias(); track inc.id) {
+            <tr>
+              <td class="code-cell">{{ inc.id }}</td>
+              <td>
+                <a [routerLink]="['/incidencias', inc.id]" class="title-link">{{ inc.titulo }}</a>
+              </td>
+              <td>{{ inc.responsable }}</td>
+              <td><span [class]="prioridadClass(inc.prioridad)">{{ inc.prioridad }}</span></td>
+              <td><span [class]="estadoClass(inc.estado)">{{ inc.estado }}</span></td>
+              <td>{{ formatDate(inc.fecha) }}</td>
+              <td class="actions-col">
+                <a [routerLink]="['/incidencias', inc.id]" class="icon-btn" title="Ver detalle" aria-label="Ver detalle">👁</a>
+                <a [routerLink]="['/incidencias', inc.id, 'editar']" class="icon-btn" title="Editar" aria-label="Editar">✏️</a>
+                <button type="button" class="icon-btn danger" title="Eliminar" aria-label="Eliminar" (click)="solicitarEliminacion(inc)">🗑️</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <app-confirm-dialog
+    [open]="confirmOpen"
+    title="Eliminar incidencia"
+    [message]="pendingDelete ? 'Se eliminará la incidencia ' + pendingDelete.id + ' (' + pendingDelete.titulo + '). Esta acción no se puede deshacer.' : ''"
+    confirmText="Eliminar"
+    cancelText="Cancelar"
+    [danger]="true"
+    (confirmed)="confirmarEliminacion()"
+    (cancelled)="cancelarEliminacion()"
+  />
+</section>

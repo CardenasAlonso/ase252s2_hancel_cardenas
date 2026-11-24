@@ -1,0 +1,68 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <h1>{{ isEdit() ? 'Editar incidencia' : 'Nueva incidencia' }}</h1>
+      <p>{{ isEdit() ? 'Modifica los datos de la incidencia seleccionada.' : 'Registra una nueva incidencia institucional.' }}</p>
+    </div>
+    <button type="button" class="btn btn-ghost" (click)="cancelar()">← Volver</button>
+  </header>
+
+  <form class="form-card" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div class="form-grid">
+      <div class="field field-full">
+        <label for="titulo">Título <span class="required">*</span></label>
+        <input id="titulo" type="text" formControlName="titulo" placeholder="Asunto breve de la incidencia" />
+        @if (controlInvalid('titulo')) {
+          <small class="error">{{ errorMessage('titulo') }}</small>
+        }
+      </div>
+
+      <div class="field field-full">
+        <label for="descripcion">Descripción <span class="required">*</span></label>
+        <textarea id="descripcion" formControlName="descripcion" rows="4" placeholder="Detalle técnico de la incidencia"></textarea>
+        @if (controlInvalid('descripcion')) {
+          <small class="error">{{ errorMessage('descripcion') }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="responsable">Responsable <span class="required">*</span></label>
+        <input id="responsable" type="text" formControlName="responsable" placeholder="Técnico asignado" />
+        @if (controlInvalid('responsable')) {
+          <small class="error">{{ errorMessage('responsable') }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="prioridad">Prioridad <span class="required">*</span></label>
+        <select id="prioridad" formControlName="prioridad">
+          @for (p of prioridades; track p) {
+            <option [value]="p">{{ p }}</option>
+          }
+        </select>
+        @if (controlInvalid('prioridad')) {
+          <small class="error">{{ errorMessage('prioridad') }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="estado">Estado <span class="required">*</span></label>
+        <select id="estado" formControlName="estado">
+          @for (e of estados; track e) {
+            <option [value]="e">{{ e }}</option>
+          }
+        </select>
+        @if (controlInvalid('estado')) {
+          <small class="error">{{ errorMessage('estado') }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-ghost" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+        {{ submitting() ? 'Guardando...' : (isEdit() ? 'Guardar cambios' : 'Crear incidencia') }}
+      </button>
+    </div>
+  </form>
+</section>
