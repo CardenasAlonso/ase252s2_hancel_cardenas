@@ -59,48 +59,50 @@
     </div>
   </section>
 
-  @if (incidencias().length === 0) {
-    <div class="empty-state">
-      <h3>Sin resultados</h3>
-      <p>No se encontraron incidencias con los filtros aplicados.</p>
-      <a routerLink="/incidencias/nueva" class="btn btn-primary">Crear incidencia</a>
-    </div>
-  } @else {
-    <div class="table-wrapper">
-      <table class="incidencias-table">
-        <thead>
+  <div class="table-wrapper">
+    <table class="incidencias-table">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Título</th>
+          <th>Responsable</th>
+          <th>Prioridad</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th class="actions-col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (inc of incidencias(); track inc.id) {
           <tr>
-            <th>Código</th>
-            <th>Título</th>
-            <th>Responsable</th>
-            <th>Prioridad</th>
-            <th>Estado</th>
-            <th>Fecha</th>
-            <th class="actions-col">Acciones</th>
+            <td class="code-cell">{{ inc.id }}</td>
+            <td>
+              <a [routerLink]="['/incidencias', inc.id]" class="title-link">{{ inc.titulo }}</a>
+            </td>
+            <td>{{ inc.responsable }}</td>
+            <td><span [class]="prioridadClass(inc.prioridad)">{{ inc.prioridad }}</span></td>
+            <td><span [class]="estadoClass(inc.estado)">{{ inc.estado }}</span></td>
+            <td>{{ formatDate(inc.fecha) }}</td>
+            <td class="actions-col">
+              <a [routerLink]="['/incidencias', inc.id]" class="icon-btn" title="Ver detalle" aria-label="Ver detalle">👁</a>
+              <a [routerLink]="['/incidencias', inc.id, 'editar']" class="icon-btn" title="Editar" aria-label="Editar">✏️</a>
+              <button type="button" class="icon-btn danger" title="Eliminar" aria-label="Eliminar" (click)="solicitarEliminacion(inc)">🗑️</button>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          @for (inc of incidencias(); track inc.id) {
-            <tr>
-              <td class="code-cell">{{ inc.id }}</td>
-              <td>
-                <a [routerLink]="['/incidencias', inc.id]" class="title-link">{{ inc.titulo }}</a>
-              </td>
-              <td>{{ inc.responsable }}</td>
-              <td><span [class]="prioridadClass(inc.prioridad)">{{ inc.prioridad }}</span></td>
-              <td><span [class]="estadoClass(inc.estado)">{{ inc.estado }}</span></td>
-              <td>{{ formatDate(inc.fecha) }}</td>
-              <td class="actions-col">
-                <a [routerLink]="['/incidencias', inc.id]" class="icon-btn" title="Ver detalle" aria-label="Ver detalle">👁</a>
-                <a [routerLink]="['/incidencias', inc.id, 'editar']" class="icon-btn" title="Editar" aria-label="Editar">✏️</a>
-                <button type="button" class="icon-btn danger" title="Eliminar" aria-label="Eliminar" (click)="solicitarEliminacion(inc)">🗑️</button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  }
+        } @empty {
+          <tr>
+            <td colspan="7" class="empty-cell">
+              <div class="empty-state">
+                <h3>Sin resultados</h3>
+                <p>No se encontraron incidencias con los filtros aplicados.</p>
+                <a routerLink="/incidencias/nueva" class="btn btn-primary">Crear incidencia</a>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 
   <app-confirm-dialog
     [open]="confirmOpen"
